@@ -8,7 +8,7 @@ def jobsearch(query: str) -> str:
     """
     This tool returns the open jobs
     Args:
-        query (str): The search query containing job title, location, and type.
+        query (str): The search query containing website, job title, location, and type.
     """
     # construct the query for searching the job sites
     search_query = f"http://serpapi.com/search?q={query}&api_key={os.getenv("SERPAPI_API_KEY")}"
@@ -20,9 +20,11 @@ def jobsearch(query: str) -> str:
 
 model = LiteLLMModel(model_id="ollama_chat/mistral:latest", api_key="ollama")
 agent = CodeAgent(tools = [jobsearch], model=model)
+query = input(f"Enter your job search query : ")
+task = f"Search for jobs on LinkedIn in Hyderabad, India for Vice President with remote working options"
 response = agent.run(
-        task="Search for jobs in Hyderabad for Vice president with Hybrid working options",
-        max_steps=1
+        task=query,
+        max_steps=5
     )
-print(type(response))
-print(response)
+print(f"response type:{type(response)}")
+print(f"results from agent run : {response}\n\n")
