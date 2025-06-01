@@ -2,12 +2,12 @@ image: gitpod/workspace-full
 
 tasks:  
   - name: Ollama Install and start service
-    before: echo "Hi from Terminal 2"
-    init: curl -fsSL https://ollama.com/install.sh  | sh
-    command: ollama serve && ollama run mistral:latest
-
-  - name: install and set up the environment  
-    init: pip install -r requirements.txt 
+    init: |
+      pip install -r requirements.txt 
+      curl -fsSL https://ollama.com/install.sh  | sh
+      nohup ollama serve > /workspace/ollama.log 2>&1 &
+      sleep 10
+      ollama pull mistral:latest
       
 
 # List the ports to expose. Learn more: https://www.gitpod.io/docs/configure/workspaces/ports
