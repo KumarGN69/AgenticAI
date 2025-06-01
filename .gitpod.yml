@@ -5,20 +5,26 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - name: "Project setup"
+  - name: "Setup Python & Ollama"
     init: |
-      echo "Creating virtual environment"
-      python -m venv .venv
-    command: |
-      echo "Activating virtual environment and installing dependencies"
-      bash -c "
-        source .venv/bin/activate && \
-        pip install -r requirements.txt && \
-        echo 'Installing Ollama' && \
-        curl -fsSL https://ollama.com/install.sh | sh && \
-        echo 'Starting Ollama in background' && \
-        nohup ollama serve > ollama.log 2>&1 & \
-        sleep 5 && \
-        echo 'Pulling Mistral model' && \
-        ollama pull mistral:latest
+      echo "Creating virtual environment..."
+      python3 -m venv .venv
+      source .venv/bin/activate
+      echo "Installing dependencies..."
+      pip install --upgrade pip
+      pip install -r requirements.txt
 
+      echo "Installing Ollama..."
+      curl -fsSL https://ollama.com/install.sh | sh
+
+      echo "Pulling Mistral model..."
+      nohup ollama serve > /workspace/ollama.log 2>&1 &
+      sleep 10
+      ollama pull mistral:latest
+    command: |
+      echo "Ollama is running. Tail logs below."
+      tail -f /workspace/ollama.log
+
+ports:
+  - port: 11434
+    onOpen: ignore
