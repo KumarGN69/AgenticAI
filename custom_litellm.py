@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 @tool
 def jobsearch(query: str) -> str:
     """
-    This tool returns the open jobs
+    This tool searches using user query and returns the open jobs
     Args:
         query (str): The search query containing website, job title, location, and type.
     """
