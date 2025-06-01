@@ -1,4 +1,4 @@
-smolagents~=1.16.1
+smolagents[litellm]~=1.16.1
 huggingface-hub~=0.32.2
 python-certifi-win32~=1.6.1
 duckduckgo-search~=8.0.2
