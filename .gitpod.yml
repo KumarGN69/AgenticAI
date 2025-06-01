@@ -9,14 +9,12 @@ tasks:
     init: |
       echo "Creating virtual environment..."
       python3 -m venv .venv
+      echo "Activating virtual environment...""
       source .venv/bin/activate
       echo "Installing dependencies..."
-      pip install --upgrade pip
       pip install -r requirements.txt
-
       echo "Installing Ollama..."
       curl -fsSL https://ollama.com/install.sh | sh
-
       echo "Pulling Mistral model..."
       nohup ollama serve > /workspace/ollama.log 2>&1 &
       sleep 10
