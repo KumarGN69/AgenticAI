@@ -5,11 +5,16 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: 
+  - init: |
+      echo  "creating a virtual env"
       python -m venv .venv
+      echo  "activating the virtual env"
       source .venv/bin/activate
+      echo  "installing dependencies"
       pip install -r requirements.txt
+      echo "installing ollama"
       curl -fsSL https://ollama.com/install.sh | sh
+      echo "starting ollama and pulling the models"
       ollama serve
       ollama pull mistral:latest
 
