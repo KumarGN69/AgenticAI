@@ -1,17 +1,26 @@
 from typing import TypedDict, Literal
 import random
 from langgraph.graph import StateGraph , START, END
+from custom_llm import CustomLLMModel
 
 class State(TypedDict):
     graph_state:str
 
+model = CustomLLMModel()
+client = model.getclientinterface()
+
 def node_1(state):
     print("--Node1--")
-    return {"graph_state": state['graph_state']+"I am"}
+    return {"graph_state": state['graph_state']+"I am "}
 
 def node_2(state):
     print("--Node2--")
-    return {"graph_state": state['graph_state']+" happy! :)"}
+    user_input = input("Enter your mood: ")
+    response = client.generate(
+        model=model.MODEL_NAME,
+        prompt=f"What is the facial expression when the person is {user_input}?",
+    )
+    return {"graph_state": state['graph_state'] + f"{response.response}"}
 
 def node_3(state):
     print("--Node3--")
@@ -19,7 +28,7 @@ def node_3(state):
 
 def decide_mood(state)->Literal["node_2", "node_3"]:
     user_input = state['graph_state']
-    if random.random() < 0.5:
+    if random.random() > 0.1:
         return "node_2"
     else:
         return "node_3"
