@@ -22,4 +22,4 @@ messages.append(HumanMessage(content=f"I want to learn about basics!", name="Kum
 model_with_tools = model.bind_tools([multiply])
 result = model_with_tools.invoke([HumanMessage(content=f"What is 3 multipled by 10", name="Kumar")])
 # print(type(result))
-pprint(result)
+pprint(result.tool_calls)
