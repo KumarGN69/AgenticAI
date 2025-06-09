@@ -1,46 +1,31 @@
 from typing import TypedDict, Literal, Annotated
-import random
-from langgraph.graph import StateGraph , START, END
-from langgraph.graph import add_messages
-from langchain_core.messages import AnyMessage
+from langgraph.graph import StateGraph , START, END, MessagesState
+from langchain_core.messages import HumanMessage
 
-class State(TypedDict):
-    graph_state:str
-    messages : Annotated[list[AnyMessage],add_messages]
+from langchain_ollama import ChatOllama
 
-def node_1(state):
-    print("--Node1--")
-    return {"graph_state": state['graph_state']+"I am"}
+def multiply(a:int, b:int) ->int:
+    """
+    Multiply a and b
+    Args:
+        a: first int
+        b: second int
+    """
+    return a * b
+def tool_calling_llm(state:MessagesState):
+    return {"messages":[llm_with_tools.invoke(state["messages"])]}
 
-def node_2(state):
-    print("--Node2--")
-    return {"graph_state": state['graph_state']+" happy! :)"}
+llm = ChatOllama(
+    model ="mistral:latest"
+)
+llm_with_tools = llm.bind_tools([multiply])
 
-def node_3(state):
-    print("--Node3--")
-    return {"graph_state": state['graph_state']+" sad :("}
-
-def decide_mood(state)->Literal["node_2", "node_3"]:
-    user_input = state['graph_state']
-    if random.random() < 0.5:
-        return "node_2"
-    else:
-        return "node_3"
-
-builder = StateGraph(State)
-builder.add_node("node_1",node_1)
-builder.add_node("node_2",node_2)
-builder.add_node("node_3",node_3)
-
-builder.add_edge(START,"node_1")
-builder.add_conditional_edges("node_1", decide_mood)
-builder.add_edge("node_2", END)
-builder.add_edge("node_3", END)
+builder = StateGraph(MessagesState)
+builder.add_node("tool_calling_llm", tool_calling_llm)
+builder.add_edge(START, "tool_calling_llm")
+builder.add_edge("tool_calling_llm", END)
 
 graph = builder.compile()
 
-with open("graph.png", "wb") as f:
-    f.write(graph.get_graph().draw_mermaid_png())
-
-result = graph.invoke({"graph_state":"Hi I am Kumar,"})
-print("Final graph_state:", result["graph_state"])
+result = graph.invoke({"messages":HumanMessage(content="Multiply 4 and 5")})
+print("Result:",result["messages"])
