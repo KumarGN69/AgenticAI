@@ -1,9 +1,12 @@
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, Annotated
 import random
 from langgraph.graph import StateGraph , START, END
+from langgraph.graph import add_messages
+from langchain_core.messages import AnyMessage
 
 class State(TypedDict):
     graph_state:str
+    messages : Annotated[list[AnyMessage],add_messages]
 
 def node_1(state):
     print("--Node1--")
