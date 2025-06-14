@@ -1,0 +1,56 @@
+from langchain_core.messages import AIMessage, HumanMessage,SystemMessage, BaseMessage
+from langchain_ollama import ChatOllama
+from langgraph.graph import StateGraph, START, END, MessagesState
+from langgraph.prebuilt import ToolNode, tools_condition
+
+def multiply(a:int, b:int) ->int:
+    """
+    Multiply a and b
+    Args:
+        a: first int
+        b: second int
+    """
+    return a * b
+def add(a:int, b:int) ->int:
+    """
+    Add a and b
+    Args:
+        a: first int
+        b: second int
+    """
+    return a + b
+def divide(a:int, b:int) ->int:
+    """
+    Divide a by b
+    Args:
+        a: first int
+        b: second int
+    """
+    return a / b
+
+tools = [add, multiply, divide]
+
+model = ChatOllama(model = "llama3.2:latest")
+model_with_tools = model.bind_tools(tools)
+
+sys_msg = SystemMessage(content="You are a helpful assistant tasked with performing arithmetic on set of given inputs")
+
+def assistant(state:MessagesState):
+    return {"messages":[model_with_tools.invoke([sys_msg] + state["messages"])]}
+
+builder = StateGraph(MessagesState)
+builder.add_node("assistant",assistant)
+builder.add_node("tools", ToolNode(tools))
+
+builder.add_edge(START, "assistant")
+builder.add_conditional_edges("assistant", tools_condition)
+builder.add_edge("tools", "assistant")
+
+react_graph = builder.compile()
+
+messages = [HumanMessage(content=f"Add 3 and 4. Multiply the output by 2 . Divide the output by 5", name="Kumar")]
+
+results = react_graph.invoke({"messages":messages})
+# print(results)
+for message in results["messages"]:
+    message.pretty_print()
