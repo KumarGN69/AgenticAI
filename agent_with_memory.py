@@ -55,6 +55,8 @@ builder.add_edge("tools", "assistant")
 
 #---------------------Define memory persistance-------------------
 react_graph = builder.compile(checkpointer=MemorySaver())
+with open("reactgraph_memory.png", "wb") as f:
+    f.write(react_graph.get_graph().draw_mermaid_png())
 config = RunnableConfig(configurable={"thread_id": "1"})
 
 #---------------------Invoke the graph for Agent functionality-------------------

@@ -48,6 +48,9 @@ builder.add_edge("tools", "assistant")
 
 react_graph = builder.compile()
 
+with open("react_graph.png", "wb") as f:
+    f.write(react_graph.get_graph().draw_mermaid_png())
+
 messages = [HumanMessage(content=f"Add 3 and 4. Multiply the output by 2 . Divide the output by 5", name="Kumar")]
 
 results = react_graph.invoke({"messages":messages})
