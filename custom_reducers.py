@@ -16,7 +16,7 @@ def node_2(state: PydanticState):
     return {"foo": [state.foo[0] + 2]}
 def node_3(state:PydanticState):
     print("--Node3--")
-    return {"foo": [state.foo[0] + 3]}
+    return {"foo": [state.foo[0] + 2]}
 
 builder = StateGraph(PydanticState)
 builder.add_node("node_1", node_1)
