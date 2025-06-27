@@ -5,8 +5,22 @@ from langgraph.graph import StateGraph , START, END
 from pydantic import BaseModel
 from langgraph.errors import InvalidUpdateError
 
+def reduce_list(left: list | None, right: list | None) -> list:
+    """Custom reducer to concatenate two lists, handling cases where one or both are None.
+
+    :param left: First list (or None)
+    :param right: Second list (or None)
+    :return: Concatenated list
+    """
+    if left is None:
+        left = []
+    if right is None:
+        right = []
+    return left + right
+
+
 class PydanticState(BaseModel):
-    foo: Annotated[list[int],add]
+    foo: Annotated[list[int],reduce_list]
 
 def node_1(state: PydanticState):
     print("--Node1--")
@@ -33,7 +47,7 @@ graph = builder.compile()
 with open("graph.png", "wb") as f:
     f.write(graph.get_graph().draw_mermaid_png())
 try:
-    result = graph.invoke(PydanticState(foo=[1]))
+    result = graph.invoke(PydanticState(foo=[1.5]))
     print("Final result:", result["foo"])
 except InvalidUpdateError as e:
     print(f"Invalid update error occurred: {e}")
