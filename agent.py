@@ -19,14 +19,14 @@ def add(a:int, b:int) ->int:
         b: second int
     """
     return a + b
-def divide(a:int, b:int) ->int:
+def divide(a:int, b:int) ->float:
     """
     Divide a by b
     Args:
         a: first int
         b: second int
     """
-    return a / b
+    return float(a / b)
 
 tools = [add, multiply, divide]
 
