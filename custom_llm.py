@@ -5,6 +5,8 @@ from langchain_ollama.chat_models import ChatOllama
 from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from ollama import Client
+
+
 # from custom_configs import OUTPUT_FORMAT, MODEL_TEMPERATURE
 
 class CustomLLMModel:
@@ -25,15 +27,17 @@ class CustomLLMModel:
             args: None
             return: handle of the Ollama Client interface of the llm
     """
+
     def __init__(self):
         """constructor for the LLMModel class and populates the host, api key and the model to use"""
         load_dotenv()
         self.MODEL_URL = os.getenv("BASE_URL")
         self.API_KEY = os.getenv("API_KEY")
         self.MODEL_NAME = os.getenv("INFERENCE_MODEL")
-        self.MODEL_TEMPERATURE= os.getenv('MODEL_TEMPERATURE')
+        self.MODEL_TEMPERATURE = os.getenv('MODEL_TEMPERATURE')
         self.EMBED_MODEL = os.getenv("EMBEDDING_MODEL")
         self.TOP_K = os.getenv('MODEL_TOP_K')
+
     def getmodelinstance(self):
         """Return the handle to the specific custom model
         return: OllamaLLM model with requisite configuration
@@ -43,8 +47,9 @@ class CustomLLMModel:
             api_key=self.API_KEY,
             model=self.MODEL_NAME,
             temperature=self.MODEL_TEMPERATURE,
-            top_k= self.TOP_K
+            top_k=self.TOP_K
         )
+
     def getchatinstance(self):
         """Return the handle to the specific custom model
         return: ChatOllama model with requisite configuration
@@ -56,6 +61,7 @@ class CustomLLMModel:
             # format=OUTPUT_FORMAT,
             temperature=self.MODEL_TEMPERATURE
         )
+
     def create_embedding(self) -> OllamaEmbeddings:
         """create embedding
         return: List of embedding vectors
@@ -66,7 +72,7 @@ class CustomLLMModel:
         )
         return embeddings
 
-    def create_vectorstore(self,input_text:list):
+    def create_vectorstore(self, input_text: list):
         """
         splits the input text in chunks with overlap,
         create embeddings using OllamaEmbedding add chunks to vector store
@@ -78,7 +84,7 @@ class CustomLLMModel:
             chunk_size=200,
             chunk_overlap=100,
             # length_function=len
-            )
+        )
         # use the text splitter to create and split the documents
         # print('Starting creating documents list')
         doc_list = text_splitter.create_documents(input_text)
@@ -101,10 +107,11 @@ class CustomLLMModel:
                 persist_directory="./chroma_langchain.db"
             )
             end = time.time()
-            print(f'Time taken to embed and create a vector store: {end-start} seconds')
+            print(f'Time taken to embed and create a vector store: {end - start} seconds')
         print('Done vector store creation')
-        return vector_store # returns the vector store handle
-    def getclientinterface(self)->Client:
+        return vector_store  # returns the vector store handle
+
+    def getclientinterface(self) -> Client:
         """
         Returns the Ollama client for a chat/generate/create interface
         :return: ollama Client object

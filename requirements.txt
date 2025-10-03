@@ -1,3 +1,4 @@
+python-dotenv
 smolagents[litellm]~=1.22.0
 huggingface-hub~=0.35.3
 python-certifi-win32~=1.6.1
