@@ -36,10 +36,11 @@ model = CustomLLMModel().getmodelinstance()
 query = input("Enter the arithmetic functions you want to perform: ")
 prompt = (
             f"You are an experienced arithmetic teaching assistant"
-            f"You have access to the following functions:"
+            f"You have access to the following tools:"
             f"[{add},{multiply},{divide}]"
-            f"Using these functions perform the task per user instruction in {query}"
-            f"and output the final result of the arithmetic"
+            f"Create python code using these tools per user instruction in {query}"
+            # f"Save the generated code as generated_code.py in the same folder"
+            f"Execute the generated code and output the final result "
         )
 
 response = model.invoke(prompt)

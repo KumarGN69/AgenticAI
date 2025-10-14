@@ -15,4 +15,5 @@ class DSPY:
 # Example usage
 handle = DSPY()
 handle.chainofthought(question='Who is the president of USA', answer='')
-
+print(handle.lm("Say this is a test!", temperature=0.7) ) # => ['This is a test!']
+print(handle.lm(messages=[{"role": "user", "content": "Say this is a test!"}]) ) # => ['This is a test!']

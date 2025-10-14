@@ -2,7 +2,8 @@ from langchain_core.messages import HumanMessage,SystemMessage
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, START, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
-
+from langchain.load.dump import dumps
+import json, pprint
 def multiply(a:int, b:int) ->int:
     """
     Multiply a and b
@@ -54,6 +55,6 @@ with open("react_graph.png", "wb") as f:
 messages = [HumanMessage(content=f"Add 3 and 4. Multiply the output by 2 . Divide the output by 5", name="Kumar")]
 
 results = react_graph.invoke({"messages": messages})
-# print(results)
+pprint.pprint(dumps(results))
 for message in results["messages"]:
     message.pretty_print()
