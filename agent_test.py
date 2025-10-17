@@ -1,7 +1,10 @@
 from custom_llm import CustomLLMModel
 from pydantic import BaseModel, Field
+import json
 
 class Result(BaseModel):
+    operand1 : int
+    operand2: int
     action: str
     result: float
 
@@ -31,7 +34,7 @@ def divide(a:int, b:int) ->float:
     """
     return float(a / b)
 
-model = CustomLLMModel().getmodelinstance()
+model = CustomLLMModel(reasoning=True).getchatinstance()
 # structured_llm = model.with_structured_output(Result)
 query = input("Enter the arithmetic functions you want to perform: ")
 prompt = (
@@ -44,4 +47,22 @@ prompt = (
         )
 
 response = model.invoke(prompt)
+print(response.additional_kwargs['reasoning_content'])
 print(f"The answer to your arithmetic task is:{response}")
+
+# llm = CustomLLMModel().getchatinstance()
+# query = input("Enter your query: ")
+# response = llm.invoke(
+#                 input=f'{query}',
+#                 format = Result.model_json_schema()
+#             )
+# result = Result.model_validate_json(response.content)
+# print(response.additional_kwargs['reasoning_content'])
+# result_json=  {
+#     "param1":result.operand1,
+#     "param2":result.operand2,
+#     "action":result.action,
+#     "result":result.result
+# }
+#
+# print(type(result_json), result_json)
